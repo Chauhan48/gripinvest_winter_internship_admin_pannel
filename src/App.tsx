@@ -1,25 +1,35 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-} from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard'
+import Layout from './components/layout/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
+import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
+
+const theme = createTheme();
 
 function App() {
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-      </Routes>
-      <Routes>
-        <Route path="/dashboard" element={<Dashboard />} />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
         </Routes>
-      
-
-    </Router>
+      </Router>
+    </ThemeProvider>
   )
 }
 

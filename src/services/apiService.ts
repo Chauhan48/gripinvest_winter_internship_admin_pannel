@@ -26,3 +26,37 @@ export const dashboard = async () => {
     return { data: null, error: errorMsg };
   }
 }
+
+export const logout = async () => {
+  try {
+    const response = await api.post("/user/logout");
+    return { data: response.data, error: null };
+  } catch (error: any) {
+    let errorMsg = "Something went wrong!";
+    return { data: null, error: errorMsg };
+  }
+}
+
+export const updateProfile = async (userData: { first_name: string, last_name: string, password: string, risk_appetite: string }) => {
+  try {
+    const response = await api.post('/user/update-profile', userData);
+    return { message: response.data.message, suggestions: response.data.suggestion, warning: response.data.warning, error: null };
+
+  } catch (error: any) {
+    let errorMsg = "Something went wrong!";
+    let suggestions = null;
+    let warning = null;
+    if (error.response && error.response.data) {
+      if (error.response.data.message) {
+        errorMsg = error.response.data.message;
+      }
+      if (error.response.data.suggestions || error.response.data.suggestion) {
+        suggestions = error.response.data.suggestions || error.response.data.suggestion;
+      }
+      if (error.response.data.warning) {
+        warning = error.response.data.warning;
+      }
+    }
+    return { message: null, suggestions, warning, token: null, error: errorMsg };
+  }
+}

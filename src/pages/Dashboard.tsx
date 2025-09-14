@@ -19,7 +19,7 @@ const Dashboard = () => {
     const [totalProducts, setTotalProducts] = useState<number>(0);
     const [totalUsers, setTotalUsers] = useState<number>(0);
     const [totalInvestments, setTotalInvestments] = useState<number>(0);
-    const [mostSellingProducts, setMostSellingProducts] = useState();
+    const [mostSellingProducts, setMostSellingProducts] = useState([]);
     useEffect(() => {
         const dashboardApi = async () => {
             const { data } = await dashboard();
@@ -27,7 +27,6 @@ const Dashboard = () => {
             setTotalUsers(data.totalUsers.totalUsers);
             setTotalInvestments(data.totalInvestments.totalInvestments);
             setMostSellingProducts(data.mostSellingProducts);
-            console.log(mostSellingProducts)
         }
         dashboardApi();
     }, [totalProducts, totalUsers, totalInvestments]);

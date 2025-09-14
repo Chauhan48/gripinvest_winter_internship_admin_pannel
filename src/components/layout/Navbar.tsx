@@ -14,6 +14,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
+import { logout } from '../../services/apiService';
 
 const pages = ['Dashboard', 'Products', 'Investments'];
 const settings = ['Profile', 'Logout'];
@@ -62,6 +63,9 @@ function Navbar() {
   const handleSetting = (setting: string) => {
     switch (setting) {
       case 'Logout':
+        (async function expireSession(){
+          const {data} = await logout(); 
+        })();
         navigate('/login');
         break;
       case 'Profile':

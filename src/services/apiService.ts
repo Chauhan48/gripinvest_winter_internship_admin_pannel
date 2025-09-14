@@ -29,7 +29,7 @@ export const dashboard = async () => {
 
 export const logout = async () => {
   try {
-    const response = await api.post("/user/logout");
+    const response = await api.get("/user/logout");
     return { data: response.data, error: null };
   } catch (error: any) {
     let errorMsg = "Something went wrong!";
@@ -40,6 +40,7 @@ export const logout = async () => {
 export const updateProfile = async (userData: { first_name: string, last_name: string, password: string, risk_appetite: string }) => {
   try {
     const response = await api.post('/user/update-profile', userData);
+    console.log(response);
     return { message: response.data.message, suggestions: response.data.suggestion, warning: response.data.warning, error: null };
 
   } catch (error: any) {

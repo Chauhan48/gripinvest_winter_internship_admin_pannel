@@ -16,7 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../services/apiService';
 
-const pages = ['Dashboard', 'Products', 'Investments'];
+const pages = ['Dashboard', 'Transactions'];
 const settings = ['Profile', 'Logout'];
 
 function Navbar() {
@@ -45,11 +45,8 @@ function Navbar() {
       case 'Dashboard':
         navigate('/dashboard');
         break;
-      case 'Products':
-        navigate('/products');
-        break;
-      case 'Investments':
-        navigate('/investments');
+      case 'Transactions':
+        navigate('/transactions');
         break;
       default:
         break;

@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Profile from './components/Profile';
+import Transactions from './components/Transactions';
 
 
 const theme = createTheme();
@@ -24,6 +25,16 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <Dashboard />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/transactions"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Transactions />
                 </Layout>
               </ProtectedRoute>
             }

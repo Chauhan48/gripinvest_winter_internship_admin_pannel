@@ -40,7 +40,6 @@ export const logout = async () => {
 export const updateProfile = async (userData: { first_name: string, last_name: string, password: string, risk_appetite: string }) => {
   try {
     const response = await api.post('/user/update-profile', userData);
-    console.log(response);
     return { message: response.data.message, suggestions: response.data.suggestion, warning: response.data.warning, error: null };
 
   } catch (error: any) {
@@ -59,5 +58,14 @@ export const updateProfile = async (userData: { first_name: string, last_name: s
       }
     }
     return { message: null, suggestions, warning, token: null, error: errorMsg };
+  }
+}
+
+export const transactions = async (filters: any) => {
+  try{
+    const response = await api.get('/admin/transactions?' + filters);
+    return response;
+  }catch(error: any){
+    return error.message;
   }
 }

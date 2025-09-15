@@ -6,6 +6,7 @@ import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Profile from './components/Profile';
 import Transactions from './components/Transactions';
+import Products from './components/Products';
 
 
 const theme = createTheme();
@@ -35,6 +36,16 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <Transactions />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/products"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Products />
                 </Layout>
               </ProtectedRoute>
             }

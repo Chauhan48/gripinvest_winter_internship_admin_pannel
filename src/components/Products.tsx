@@ -4,13 +4,6 @@ import {Container} from '@mui/material';
 
 const Products = () => {
 
-    // useEffect(() => {
-    //     const productList = async () => {
-    //         const response = await productsList();
-
-    //     }
-    // }, [])
-
   return (
     <div>
         <Container maxWidth="lg">

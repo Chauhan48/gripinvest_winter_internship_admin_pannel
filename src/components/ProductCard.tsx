@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Typography,
   Box,
@@ -24,8 +24,8 @@ interface Product {
   risk_level: string;
 }
 
-const riskLevels = ['Low', 'Medium', 'High']; // example risk levels to choose from
-const investmentTypes = ['Equity', 'Debt', 'Hybrid']; // example types
+const riskLevels = ['low','moderate','high'];
+const investmentTypes = ['bond','fd','mf','etf','other'];
 
 const ProductCard = () => {
   const navigate = useNavigate();

@@ -14,15 +14,20 @@ import {
     Paper
 } from "@mui/material";
 import { dashboard } from "../services/apiService";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
     const [totalProducts, setTotalProducts] = useState<number>(0);
     const [totalUsers, setTotalUsers] = useState<number>(0);
     const [totalInvestments, setTotalInvestments] = useState<number>(0);
     const [mostSellingProducts, setMostSellingProducts] = useState([]);
+    const navigate = useNavigate();
     useEffect(() => {
         const dashboardApi = async () => {
-            const { data } = await dashboard();
+            const { data, error } = await dashboard();
+            if(error){
+                navigate('/login');
+            }
             setTotalProducts(data.totalProducts.totalProducts);
             setTotalUsers(data.totalUsers.totalUsers);
             setTotalInvestments(data.totalInvestments.totalInvestments);

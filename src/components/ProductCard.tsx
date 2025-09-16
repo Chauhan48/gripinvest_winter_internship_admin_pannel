@@ -12,7 +12,7 @@ import {
   Dialog
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { productListing } from '../services/apiService';
+import { deleteProduct, productListing } from '../services/apiService';
 import AddProduct from './AddProduct';
 
 const riskLevels = ['low', 'moderate', 'high'];
@@ -27,6 +27,16 @@ const ProductCard = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [totalProducts, setTotalProducts] = useState(0);
   const limit = 6;
+  const [productData, setProductData] = useState({
+      id: '',
+      name: '',
+      investment_type: '',
+      tenure_months: 12,
+      annual_yield: 0.4,
+      risk_level: '',
+      min_investment: 500.00,
+      max_investment: 1000.00
+    });
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -82,6 +92,28 @@ const ProductCard = () => {
     setOpenDialog(false);
     setDialogData({});
   };
+
+  const handleDeleteProduct = async (product) => {
+  if (!window.confirm(`Are you sure you want to delete the product: ${product.name}?`)) {
+    return;
+  }
+
+  try {
+    const { error } = await deleteProduct(product.id);
+    if (error) {
+      alert('Failed to delete product. Please try again.');
+      return;
+    }
+    // Refresh product list after deletion
+    const { products, total, error: listError } = await productListing(page, limit, filters);
+    if (listError === 'Unauthorized') navigate('/login');
+    setTotalProducts(total ?? 0);
+    setProductList(products ?? []);
+  } catch (err) {
+    alert('An error occurred while deleting the product.');
+    console.error(err);
+  }
+};
 
   return (
     <>
@@ -150,11 +182,19 @@ const ProductCard = () => {
               </CardContent>
               <Box sx={{ p: 2 }}>
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   fullWidth
                   onClick={() => handleUpdateProduct(product)}
                 >
                   Update Product
+                </Button> 
+                <br /> <br />
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  onClick={() => handleDeleteProduct(product)}
+                >
+                  Delete Product
                 </Button>
               </Box>
             </Card>

@@ -1,4 +1,4 @@
-import {api} from "./axios";
+import { api } from "./axios";
 
 export const login = async (userData: { email: string; password_hash: string }) => {
   try {
@@ -14,11 +14,11 @@ export const login = async (userData: { email: string; password_hash: string }) 
 };
 
 export const dashboard = async () => {
-  try{
+  try {
     const response = await api.get('/admin/dashboard');
-    return {data: response.data, error: null};
+    return { data: response.data, error: null };
 
-  }catch(error: any){
+  } catch (error: any) {
     let errorMsg = "Something went wrong!";
     if (error.response && error.response.data && error.response.data.message) {
       errorMsg = error.response.data.message;
@@ -62,10 +62,10 @@ export const updateProfile = async (userData: { first_name: string, last_name: s
 }
 
 export const transactions = async (filters: any) => {
-  try{
+  try {
     const response = await api.get('/admin/transactions?' + filters);
     return response;
-  }catch(error: any){
+  } catch (error: any) {
     return error.message;
   }
 }
@@ -87,7 +87,7 @@ export const productListing = async (
   } catch (error: any) {
     let errorMsg = 'Something went wrong!';
     if (error.response && error.response.data && error.response.data.message) {
-      
+
       errorMsg = error.response.data.message;
     }
     return { products: null, total: null, error: errorMsg };
@@ -111,9 +111,25 @@ export const addProduct = async (
   } catch (error: any) {
     let errorMsg = 'Something went wrong!';
     if (error.response && error.response.data && error.response.data.message) {
-      
+
       errorMsg = error.response.data.message;
     }
     return { message: null, error: errorMsg };
   }
 };
+
+export const deleteProduct = async (productId: string) => {
+  try {
+    const response = await api.delete('/products/delete-product', {
+      data: { productId }
+    });
+    return { message: response.data.message, error: null };
+  } catch (error: any) {
+    let errorMsg = 'Something went wrong!';
+    if (error.response && error.response.data && error.response.data.message) {
+
+      errorMsg = error.response.data.message;
+    }
+    return { message: null, error: errorMsg };
+  }
+}

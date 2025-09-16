@@ -93,3 +93,27 @@ export const productListing = async (
     return { products: null, total: null, error: errorMsg };
   }
 };
+
+export const addProduct = async (
+  productData: {
+    name: string,
+    investment_type: string,
+    tenure_months: number,
+    annual_yield: number,
+    risk_level: string,
+    min_investment: number,
+    max_investment: number
+  }
+) => {
+  try {
+    const response = await api.post('/products/add-product', productData);
+    return { message: response.data.message, error: null };
+  } catch (error: any) {
+    let errorMsg = 'Something went wrong!';
+    if (error.response && error.response.data && error.response.data.message) {
+      
+      errorMsg = error.response.data.message;
+    }
+    return { message: null, error: errorMsg };
+  }
+};

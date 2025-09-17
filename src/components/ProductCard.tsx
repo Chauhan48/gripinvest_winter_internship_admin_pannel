@@ -12,7 +12,7 @@ import {
   Dialog
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { deleteProduct, productListing } from '../services/apiService';
+import { deleteProduct, productListing, updateProduct } from '../services/apiService';
 import AddProduct from './AddProduct';
 
 const riskLevels = ['low', 'moderate', 'high'];
@@ -26,17 +26,8 @@ const ProductCard = () => {
   const [dialogData, setDialogData] = useState({});
   const [openDialog, setOpenDialog] = useState(false);
   const [totalProducts, setTotalProducts] = useState(0);
+  const [isUpdating, setIsUpdating] = useState(false);
   const limit = 6;
-  const [productData, setProductData] = useState({
-      id: '',
-      name: '',
-      investment_type: '',
-      tenure_months: 12,
-      annual_yield: 0.4,
-      risk_level: '',
-      min_investment: 500.00,
-      max_investment: 1000.00
-    });
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -48,7 +39,6 @@ const ProductCard = () => {
     fetchProduct();
   }, [page, filters, navigate]);
 
-  
   const [selectedRisk, setSelectedRisk] = useState(filters.risk_level ?? '');
   const [selectedInvestType, setSelectedInvestType] = useState(filters.investment_type ?? '');
 
@@ -74,6 +64,7 @@ const ProductCard = () => {
       amount: '',
       status: 'active',
     });
+    setIsUpdating(false);
     setOpenDialog(true);
   };
 
@@ -83,37 +74,72 @@ const ProductCard = () => {
       productId: product.id,
       amount: '',
       status: 'active',
-      ...product
+      id: product.id,
+      name: product.name,
+      investment_type: product.investment_type,
+      tenure_months: product.tenure_months,
+      annual_yield: product.annual_yield,
+      risk_level: product.risk_level,
+      min_investment: product.min_investment,
+      max_investment: product.max_investment
     });
+    setIsUpdating(true);
     setOpenDialog(true);
   };
 
   const handleDialogClose = () => {
     setOpenDialog(false);
     setDialogData({});
+    setIsUpdating(false);
+  };
+
+  const handleProductUpdate = async (updatedProductData) => {
+    try {
+      const { message, error } = await updateProduct(updatedProductData);
+      
+      if (error) {
+        alert(`Failed to update product: ${error}`);
+        return;
+      }
+
+      // Update the product list with the updated product data
+      setProductList(prevProducts => 
+        prevProducts.map(product => 
+          product.id === updatedProductData.id 
+            ? { ...product, ...updatedProductData }
+            : product
+        )
+      );
+
+      alert(message || 'Product updated successfully!');
+      handleDialogClose();
+    } catch (err) {
+      alert('An error occurred while updating the product.');
+      console.error(err);
+    }
   };
 
   const handleDeleteProduct = async (product) => {
-  if (!window.confirm(`Are you sure you want to delete the product: ${product.name}?`)) {
-    return;
-  }
-
-  try {
-    const { error } = await deleteProduct(product.id);
-    if (error) {
-      alert('Failed to delete product. Please try again.');
+    if (!window.confirm(`Are you sure you want to delete the product: ${product.name}?`)) {
       return;
     }
-    // Refresh product list after deletion
-    const { products, total, error: listError } = await productListing(page, limit, filters);
-    if (listError === 'Unauthorized') navigate('/login');
-    setTotalProducts(total ?? 0);
-    setProductList(products ?? []);
-  } catch (err) {
-    alert('An error occurred while deleting the product.');
-    console.error(err);
-  }
-};
+
+    try {
+      const { error } = await deleteProduct(product.id);
+      if (error) {
+        alert('Failed to delete product. Please try again.');
+        return;
+      }
+      // Refresh product list after deletion
+      const { products, total, error: listError } = await productListing(page, limit, filters);
+      if (listError === 'Unauthorized') navigate('/login');
+      setTotalProducts(total ?? 0);
+      setProductList(products ?? []);
+    } catch (err) {
+      alert('An error occurred while deleting the product.');
+      console.error(err);
+    }
+  };
 
   return (
     <>
@@ -121,6 +147,8 @@ const ProductCard = () => {
         <AddProduct
           initialData={dialogData}
           onClose={handleDialogClose}
+          onUpdate={isUpdating ? handleProductUpdate : undefined}
+          isUpdateMode={isUpdating}
         />
       </Dialog>
       <br />

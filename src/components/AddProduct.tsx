@@ -10,12 +10,12 @@ import {
   Alert,
   Snackbar
 } from '@mui/material';
-import { addProduct } from '../services/apiService';
+import { addProduct, updateProduct } from '../services/apiService';
 
 const investmentTypes = ['bond', 'fd', 'mf', 'etf', 'other'];
 const riskLevels = ['low', 'moderate', 'high'];
 
-const AddProduct = ({ initialData, onClose }) => {
+const AddProduct = ({ initialData, onClose, isUpdateMode = false }) => {
   const [formData, setFormData] = useState({
     name: '',
     investment_type: '',

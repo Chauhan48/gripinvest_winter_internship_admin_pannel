@@ -133,3 +133,26 @@ export const deleteProduct = async (productId: string) => {
     return { message: null, error: errorMsg };
   }
 }
+
+export const updateProduct = async (productData: {
+  id: string,
+  name: string,
+  investment_type: string,
+  tenure_months: number,
+  annual_yield: number,
+  risk_level: string,
+  min_investment: number,
+  max_investment: number
+}) => {
+  try {
+    const response = await api.post('/products/update-product', productData);
+    return { message: response.data.message, error: null };
+  } catch (error: any) {
+    let errorMsg = 'Something went wrong!';
+    if (error.response && error.response.data && error.response.data.message) {
+
+      errorMsg = error.response.data.message;
+    }
+    return { message: null, error: errorMsg };
+  }
+}

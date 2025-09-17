@@ -17,6 +17,7 @@ const riskLevels = ['low', 'moderate', 'high'];
 
 const AddProduct = ({ initialData, onClose, isUpdateMode = false }) => {
   const [formData, setFormData] = useState({
+    id: '',
     name: '',
     investment_type: '',
     tenure_months: 12,
@@ -49,6 +50,7 @@ const AddProduct = ({ initialData, onClose, isUpdateMode = false }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const productData = {
+      productId: formData.id,
       name: formData.name,
       investment_type: formData.investment_type,
       tenure_months: Number(formData.tenure_months),
@@ -59,25 +61,55 @@ const AddProduct = ({ initialData, onClose, isUpdateMode = false }) => {
     };
 
     try {
-      const { message, error } = await addProduct(productData);
-
-      if (message) {
-
-        setAlertMessage('Product added successfully!');
-        setAlertSeverity('success');
-        setAlertOpen(true);
-
-        setTimeout(() => {
-          onClose();
-        }, 2000);
-      } else if (error) {
-
-        setAlertMessage(error);
-        setAlertSeverity('error');
-        setAlertOpen(true);
+      if (isUpdateMode) {
+        // Call updateProduct API and use onUpdate prop
+        if (typeof window !== 'undefined' && window.onUpdate) {
+          window.onUpdate(productData);
+          return;
+        }
+        if (typeof onUpdate === 'function') {
+          onUpdate(productData);
+          return;
+        }
+        const { message, error } = await updateProduct(productData);
+        if (message) {
+          setAlertMessage('Product updated successfully!');
+          setAlertSeverity('success');
+          setAlertOpen(true);
+          setTimeout(() => {
+            onClose();
+          }, 2000);
+        } else if (error) {
+          setAlertMessage(error);
+          setAlertSeverity('error');
+          setAlertOpen(true);
+        }
+      } else {
+        // Add product logic
+        const { message, error } = await addProduct({
+          name: productData.name,
+          investment_type: productData.investment_type,
+          tenure_months: productData.tenure_months,
+          annual_yield: productData.annual_yield,
+          risk_level: productData.risk_level,
+          min_investment: productData.min_investment,
+          max_investment: productData.max_investment
+        });
+        if (message) {
+          setAlertMessage('Product added successfully!');
+          setAlertSeverity('success');
+          setAlertOpen(true);
+          setTimeout(() => {
+            onClose();
+          }, 2000);
+        } else if (error) {
+          setAlertMessage(error);
+          setAlertSeverity('error');
+          setAlertOpen(true);
+        }
       }
     } catch (err) {
-      setAlertMessage('Failed to add product. Please try again.');
+      setAlertMessage(isUpdateMode ? 'Failed to update product. Please try again.' : 'Failed to add product. Please try again.');
       setAlertSeverity('error');
       setAlertOpen(true);
     }
@@ -107,6 +139,10 @@ const AddProduct = ({ initialData, onClose, isUpdateMode = false }) => {
         autoComplete="off"
         onSubmit={handleSubmit}
       >
+        {/* Hidden field for id in update mode */}
+        {isUpdateMode && (
+          <input type="hidden" name="id" value={formData.id} />
+        )}
         <TextField
           label="Name"
           name="name"

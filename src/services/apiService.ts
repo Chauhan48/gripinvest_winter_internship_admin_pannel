@@ -145,7 +145,7 @@ export const updateProduct = async (productData: {
   max_investment: number
 }) => {
   try {
-    const response = await api.post('/products/update-product', productData);
+    const response = await api.patch('/products/update-product', productData);
     return { message: response.data.message, error: null };
   } catch (error: any) {
     let errorMsg = 'Something went wrong!';

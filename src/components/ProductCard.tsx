@@ -18,12 +18,24 @@ import AddProduct from './AddProduct';
 const riskLevels = ['low', 'moderate', 'high'];
 const investmentTypes = ['bond', 'fd', 'mf', 'etf', 'other'];
 
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  min_investment: number;
+  max_investment: number;
+  investment_type: string;
+  tenure_months: number;
+  risk_level: string;
+  annual_yield?: number;
+}
+
 const ProductCard = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState({ risk_level: null, investment_type: null });
-  const [productList, setProductList] = useState([]);
-  const [dialogData, setDialogData] = useState({});
+  const [filters, setFilters] = useState<{ risk_level: string; investment_type: string }>({ risk_level: '', investment_type: '' });
+  const [productList, setProductList] = useState<Product[]>([]);
+  const [dialogData, setDialogData] = useState<Partial<Product>>({});
   const [openDialog, setOpenDialog] = useState(false);
   const [totalProducts, setTotalProducts] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -39,13 +51,13 @@ const ProductCard = () => {
     fetchProduct();
   }, [page, filters, navigate]);
 
-  const [selectedRisk, setSelectedRisk] = useState(filters.risk_level ?? '');
-  const [selectedInvestType, setSelectedInvestType] = useState(filters.investment_type ?? '');
+  const [selectedRisk, setSelectedRisk] = useState(filters.risk_level);
+  const [selectedInvestType, setSelectedInvestType] = useState(filters.investment_type);
 
   const handleApplyFilters = () => {
     setFilters({
-      risk_level: selectedRisk || null,
-      investment_type: selectedInvestType || null,
+      risk_level: selectedRisk,
+      investment_type: selectedInvestType,
     });
     setPage(1);
   };
@@ -53,32 +65,23 @@ const ProductCard = () => {
   const handleRemoveFilters = () => {
     setSelectedRisk('');
     setSelectedInvestType('');
-    setFilters({ risk_level: null, investment_type: null });
+    setFilters({ risk_level: '', investment_type: '' });
     setPage(1);
   };
 
   const handleAddProduct = () => {
-    setDialogData({
-      userId: '',
-      productId: '',
-      amount: '',
-      status: 'active',
-    });
+    setDialogData({});
     setIsUpdating(false);
     setOpenDialog(true);
   };
 
-  const handleUpdateProduct = (product) => {
+  const handleUpdateProduct = (product: Product) => {
     setDialogData({
-      userId: '',
-      productId: product.id,
-      amount: '',
-      status: 'active',
       id: product.id,
       name: product.name,
       investment_type: product.investment_type,
       tenure_months: product.tenure_months,
-      annual_yield: product.annual_yield,
+      annual_yield: product.annual_yield ?? 0,
       risk_level: product.risk_level,
       min_investment: product.min_investment,
       max_investment: product.max_investment
@@ -93,9 +96,12 @@ const ProductCard = () => {
     setIsUpdating(false);
   };
 
-  const handleProductUpdate = async (updatedProductData) => {
+  const handleProductUpdate = async (updatedProductData: Product) => {
     try {
-      const { message, error } = await updateProduct(updatedProductData);
+      const { message, error } = await updateProduct({
+        ...updatedProductData,
+        annual_yield: updatedProductData.annual_yield ?? 0
+      });
       
       if (error) {
         alert(`Failed to update product: ${error}`);
@@ -119,7 +125,7 @@ const ProductCard = () => {
     }
   };
 
-  const handleDeleteProduct = async (product) => {
+  const handleDeleteProduct = async (product: Product) => {
     if (!window.confirm(`Are you sure you want to delete the product: ${product.name}?`)) {
       return;
     }
@@ -147,7 +153,7 @@ const ProductCard = () => {
         <AddProduct
           initialData={dialogData}
           onClose={handleDialogClose}
-          onUpdate={isUpdating ? handleProductUpdate : undefined}
+          onUpdate={isUpdating ? (handleProductUpdate as any) : undefined}
           isUpdateMode={isUpdating}
         />
       </Dialog>

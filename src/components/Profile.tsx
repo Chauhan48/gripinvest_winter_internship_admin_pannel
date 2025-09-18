@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type { SelectChangeEvent } from '@mui/material/Select';
 import { Box, TextField, Button, Typography, MenuItem, Select, InputLabel, FormControl, Snackbar, Alert } from '@mui/material';
 import { updateProfile } from '../services/apiService';
 
@@ -15,11 +16,13 @@ const Profile = () => {
         risk_appetite: 'moderate',
     });
 
-    const handleChange = (e) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent
+    ) => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: value,
+            [name as string]: value,
         }));
     };
 
@@ -29,7 +32,7 @@ const Profile = () => {
         setOpenSnackbar(false);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const response = async () => {
             const { message, suggestions, warning, error } = await updateProfile(formData);

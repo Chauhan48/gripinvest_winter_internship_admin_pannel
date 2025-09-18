@@ -64,7 +64,7 @@ function Navbar() {
     switch (setting) {
       case 'Logout':
         (async function expireSession(){
-          const {data} = await logout(); 
+          await logout();
         })();
         navigate('/login');
         break;

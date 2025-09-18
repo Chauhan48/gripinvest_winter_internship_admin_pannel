@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+// ...existing code...
 import ProductCard from './ProductCard'
 import { Container } from '@mui/material';
 

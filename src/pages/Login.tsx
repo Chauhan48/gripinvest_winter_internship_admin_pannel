@@ -23,7 +23,7 @@ const LoginPage: React.FC = () => {
     event.preventDefault();
     async function handleLogin (){
       const userData = {email, password_hash}
-      const { message, error } = await login(userData);
+      const { error } = await login(userData);
       if(error){
         setError(error);
       }else{

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   TextField,
   Select,
@@ -11,26 +11,45 @@ import {
   Snackbar
 } from '@mui/material';
 import { addProduct, updateProduct } from '../services/apiService';
+import type { SelectChangeEvent } from '@mui/material/Select';
 
 const investmentTypes = ['bond', 'fd', 'mf', 'etf', 'other'];
 const riskLevels = ['low', 'moderate', 'high'];
 
-const AddProduct = ({ initialData, onClose, isUpdateMode = false }) => {
-  const [formData, setFormData] = useState({
+interface AddProductProps {
+  initialData?: Partial<ProductData>;
+  onClose: () => void;
+  isUpdateMode?: boolean;
+  onUpdate?: (product: ProductData) => void;
+}
+
+interface ProductData {
+  id: string;
+  name: string;
+  investment_type: string;
+  tenure_months: number;
+  annual_yield: number;
+  risk_level: string;
+  min_investment: number;
+  max_investment: number;
+}
+
+const AddProduct = ({ initialData = {}, onClose, isUpdateMode = false, onUpdate }: AddProductProps) => {
+  const [formData, setFormData] = useState<ProductData>({
     id: '',
     name: '',
     investment_type: '',
     tenure_months: 12,
-    annual_yield: 0.4,
     risk_level: '',
     min_investment: 500.00,
-    max_investment: 1000.00
+    max_investment: 1000.00,
+    annual_yield: 0
   });
 
 
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
-  const [alertSeverity, setAlertSeverity] = useState('success');
+  const [alertSeverity, setAlertSeverity] = useState<'success' | 'error'>('success');
 
   useEffect(() => {
     setFormData(prev => ({
@@ -39,18 +58,20 @@ const AddProduct = ({ initialData, onClose, isUpdateMode = false }) => {
     }));
   }, [initialData]);
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name as string]: value,
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const productData = {
-      productId: formData.id,
+    const productData: ProductData = {
+      id: formData.id,
       name: formData.name,
       investment_type: formData.investment_type,
       tenure_months: Number(formData.tenure_months),
@@ -62,11 +83,6 @@ const AddProduct = ({ initialData, onClose, isUpdateMode = false }) => {
 
     try {
       if (isUpdateMode) {
-        // Call updateProduct API and use onUpdate prop
-        if (typeof window !== 'undefined' && window.onUpdate) {
-          window.onUpdate(productData);
-          return;
-        }
         if (typeof onUpdate === 'function') {
           onUpdate(productData);
           return;

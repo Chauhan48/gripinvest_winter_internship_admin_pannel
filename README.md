@@ -1,8 +1,33 @@
-# React + TypeScript + Vite
+# Grip Invest Admin Panel
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An **Admin Panel** built with **React + TypeScript + Vite + Material UI**, designed for managing products and tracking transactions.  
 
-Currently, two official plugins are available:
+Admins can:
+- **Add, update, and delete products**
+- **View all transactions**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project is dockerized for easy setup and deployment.
+
+---
+
+##  Features
+-  Fast development with **Vite**
+-  UI powered by **Material UI**
+-  Type safety with **TypeScript**
+-  Docker support for containerized builds
+
+---
+
+## 📦 Prerequisites
+- [Node.js](https://nodejs.org/) >= 18
+- [npm](https://www.npmjs.com/)
+- [Docker](https://www.docker.com/)
+
+---
+
+##  Installation
+
+1. **Clone the repository**
+   ```sh
+   git clone https://github.com/Chauhan48/gripinvest_winter_internship_admin_pannel.git
+   cd gripinvest_winter_internship_admin_pannel

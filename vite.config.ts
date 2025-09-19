@@ -10,9 +10,9 @@ export default defineConfig({
     strictPort: true,
   },
   server: {
-    port: 8080,
+    port: 4040,
     strictPort: true,
     host: true,
-    origin: "http://localhost:8080",
+    origin: "http://localhost:4040",
   },
 })

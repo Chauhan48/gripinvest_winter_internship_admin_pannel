@@ -39,7 +39,7 @@ const ProductCard = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [totalProducts, setTotalProducts] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
-  const limit = 6;
+  const limit = 30;
 
   useEffect(() => {
     const fetchProduct = async () => {

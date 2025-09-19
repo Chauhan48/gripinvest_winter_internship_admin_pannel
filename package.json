@@ -11,9 +11,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "start": "npx serve -s dist -l 5173",
+    "start": "vite",
     "docker:build": "docker build -t grip-invest-admin-pannel .",
-    "docker:run": "docker run --rm -p 5173:3000 grip-invest-admin-pannel"
+    "docker:run": "docker run --rm -p 4040:4040 grip-invest-admin-pannel"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
